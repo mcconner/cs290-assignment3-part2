@@ -1,4 +1,4 @@
-var settings = null;
+var savedList = null;
 
 var gistArray = [];
 
@@ -58,6 +58,9 @@ var xmlHttp;
 		  ul.appendChild(listItem);
 		  document.getElementById('searchResults').appendChild(ul);
 	      var divURL = document.createElement('div');
+		  if(gistArray[i].description === ""){
+			  gistArray[i].description = "No description provided";
+		  }
 	      divURL.innerHTML = '<a href="'+ gistArray[i].html_url + '">' + gistArray[i].description + '</a>';
 	      listItem.appendChild(divURL);
 		  
@@ -67,7 +70,9 @@ var xmlHttp;
 		  ul.appendChild(button);
 		  button.value = "+";
 		  button.onclick = function () {
-			  alert("Button click");
+			localStorage.setItem('list', JSON.stringify(button.parentNode.textContent));
+	        button.parentNode.style.display='none';
+	        showFavorites();
 		  }
 		  }
 
@@ -86,25 +91,52 @@ var xmlHttp;
 
 
 
-function makeGistList (array) {
-	var gistList = document.getElementById('searchResults');
-	var ul = document.createElement('ul');
-	for(i = 0; i < array.length; i++) {
-		var listItem = document.createElement("li");
-		listItem.appendChild(document.createTextNode(array[i].description));
-		ul.appendChild(listItem);
+window.onload = function(){
+	var savedList = localStorage.getItem('list');
+	if(savedList ===null){
+		savedList = {'gists':[]};
+		localStorage.setItem('list', JSON.stringify(savedList));
+	} else{
+		savedList = JSON.parse(localStorage.getItem('list'));
 	}
-	return ul;
+	showFavorites();
 }
 
-//window.onload = function(){
-//	var savedList = localStorage.getItem('list');
-//	if(list ===null){
-//		savedList = {gists:[]};
-//		localStorage.setItem('list', JSON.stringify(savedList));
-//	} else{
-//		savedList = JSON.parse(localStorage.getItem('list'));
+function showFavorites() {
+  var list = document.getElementById('showFavorites');
+  var ul = document.createElement('ul');
+  for ( var key in localStorage ) {
+    var favItem = document.createElement('li');
+	favItem.innerHTML = localStorage[key];
+	
+	var deleteButton = document.createElement("input");
+	deleteButton.type = "button";
+	ul.appendChild(deleteButton);
+	deleteButton.value = "Remove";
+	deleteButton.onclick = function () {
+		localStorage.clear();
+		showFavorites();
+	}
+	
+	favItem.appendChild(deleteButton);
+	ul.appendChild(favItem);
+	list.appendChild(ul);
+  }
+  return list; 
+}
+
+
+
+
+//function makeGistList (array) {
+//	var gistList = document.getElementById('searchResults');
+//	var ul = document.createElement('ul');
+//	for(i = 0; i < array.length; i++) {
+//		var listItem = document.createElement("li");
+//		listItem.appendChild(document.createTextNode(array[i].description));
+//		ul.appendChild(listItem);
 //	}
+//	return ul;
 //}
 
 
