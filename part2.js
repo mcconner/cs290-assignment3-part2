@@ -1,5 +1,6 @@
 var settings = null;
 
+var gistArray = [];
 
 function searchGists() {
   var i, url, numResults, python, json, javascript, sql, gistData;
@@ -42,31 +43,58 @@ var xmlHttp;
      //alert("Status = " + xmlHttp.status);
     if(xmlHttp.readyState === 4 && xmlHttp.status === 200) {
 	  alert("Ready!");
-	  var gistArray = JSON.parse(this.responseText);
+	  gistArray = JSON.parse(this.responseText);
       //document.getElementById("searchResults").innerHTML = "";
 	  
 	  //for(i = 1; i <= numResults; i++){
 
 	  //document.getElementById("searchResults").innerHTML = '<a href="'+ gistArray[i].html_url + '">' + gistArray[i].description + '</a>';
-	  document.getElementById('searchResults');
+	  var list = document.getElementById('searchResults');
 	  var ul = document.createElement('ul');
-	  for ( var i = 0; i < numResults; i++ ) {
+	  for ( var i = 0; i <= numResults*30; i++ ) {
 		  console.log(gistArray[i].description);
 	      console.log(gistArray[i].html_url);
           var listItem = document.createElement('li');
+		  ul.appendChild(listItem);
+		  document.getElementById('searchResults').appendChild(ul);
 	      var divURL = document.createElement('div');
 	      divURL.innerHTML = '<a href="'+ gistArray[i].html_url + '">' + gistArray[i].description + '</a>';
 	      listItem.appendChild(divURL);
-	  //var gistDescription = "No Description";
-		}
+		  
+		  //adds a favorites button 
+		  var button = document.createElement("input");
+		  button.type = "button";
+		  ul.appendChild(button);
+		  button.value = "+";
+		  button.onclick = function () {
+			  alert("Button click");
+		  }
+		  }
+
+		//}
 	  
     //}  
 	}
 	//makeGistList(document.getElementById('searchResults'), description);
+	//makeGistList(gistArray);
+	document.getElementById('searchResults').appendChild(makeGistList(gistArray[0]));
 	};
 
     xmlHttp.open('GET', url);
     xmlHttp.send();
+}
+
+
+
+function makeGistList (array) {
+	var gistList = document.getElementById('searchResults');
+	var ul = document.createElement('ul');
+	for(i = 0; i < array.length; i++) {
+		var listItem = document.createElement("li");
+		listItem.appendChild(document.createTextNode(array[i].description));
+		ul.appendChild(listItem);
+	}
+	return ul;
 }
 
 //window.onload = function(){
@@ -78,16 +106,6 @@ var xmlHttp;
 //		savedList = JSON.parse(localStorage.getItem('list'));
 //	}
 //}
-
-
-
-function makeGistList (gistArray) {
-	var gistList = document.getElementById('searchResults');
-	var ul = document.createElement('ul');
-	
-	return gistList;
-}
-
 
 
 //function addToFavorites() {
