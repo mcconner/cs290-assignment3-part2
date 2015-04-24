@@ -26,13 +26,6 @@ var xmlHttp;
   json = document.getElementsByName('language-json')[0].checked;
   javascript = document.getElementsByName('language-javascript')[0].checked;
   sql = document.getElementsByName('language-sql')[0].checked;
-  
-
-  /*alert("numResults = " + numResults);
-  alert("sql = " + sql);
-  alert("python = " + python);
-  alert("json = " + json);
-  alert("javascript = " + javascript);*/
  
  //url += '?pages=' + numResults;
  alert("URL = " + url);
@@ -112,7 +105,7 @@ function showFavorites() {
 	var deleteButton = document.createElement("input");
 	deleteButton.type = "button";
 	ul.appendChild(deleteButton);
-	document.getElementById('showFavorites').appendChild(ul);
+	//document.getElementById('showFavorites').appendChild(ul);
 	deleteButton.value = "Remove";
 	deleteButton.onclick = function () {
 		localStorage.clear();
