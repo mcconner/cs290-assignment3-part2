@@ -82,7 +82,7 @@ var xmlHttp;
 	}
 	//makeGistList(document.getElementById('searchResults'), description);
 	//makeGistList(gistArray);
-	document.getElementById('searchResults').appendChild(makeGistList(gistArray[0]));
+	//document.getElementById('searchResults').appendChild(makeGistList(gistArray[0]));
 	};
 
     xmlHttp.open('GET', url);
@@ -112,6 +112,7 @@ function showFavorites() {
 	var deleteButton = document.createElement("input");
 	deleteButton.type = "button";
 	ul.appendChild(deleteButton);
+	document.getElementById('showFavorites').appendChild(ul);
 	deleteButton.value = "Remove";
 	deleteButton.onclick = function () {
 		localStorage.clear();
