@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Assignment 3 Part 2</title>
+<script src='assignment3practice.js'></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- <form>
+<input type='button' name= 'favorites' value='Add To Favorites' onclick='addToFavorites()'>
+</form> -->
+
+<!-- <form>
+<input type='button' name= 'remove' value='Remove' onclick='removeFromFavorites()'>
+</form> -->
+
+
+<form>
+
+Select the number of results pages to display (30 per page):
+</br>
+<input type='number' name='numResults' min='1' max='5'>
+<br>
+
+<!--- <select size='1' name='numResults'>
+<option value=''> - Select - </option>
+<option value='5'> 1 </option>
+<option value='5'> 2 </option>
+<option value='5'> 3 </option>
+<option value='5'> 4 </option>
+<option value='5'> 5 </option> 
+</select></br></br> --->
+
+
+<br>
+Choose the languages to display:
+<br>
+<input type='checkbox' id='python' name='language-python'>Python
+<br>
+<input type='checkbox' id='json' name='language-json'>JSON
+<br>
+<input type='checkbox' id='javascript' name='language-javascript'>JavaScript
+<br>
+<input type='checkbox' id='sql' name='language-sql'>SQL
+<br>
+<input type='button' name='search' value='Search' onclick='searchGists()'>
+</form>
+
+<section>
+<div id='searchResults'></div>
+</section>
+
+<section>
+<div id='showFavorites'></div>
+<h3>Favorites</h3>
+</section>
+
+
+</body>
+</html>
