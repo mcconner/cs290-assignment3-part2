@@ -1,10 +1,9 @@
 //var savedList = null;
 var settings = null;
-
 var gistArray = [];
 
 function searchGists() {
-  var i, url, numResults, python, json, javascript, sql, gistData, gitId;
+  var i, url, numResults, python, json, javascript, sql;
   document.getElementById("searchResults").innerHTML = "";
 
 var xmlHttp;
@@ -32,18 +31,12 @@ var xmlHttp;
   xmlHttp.onreadystatechange = function () {
 
     if(xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-	  //alert("Ready!");
+
 	  gistArray = JSON.parse(this.responseText);
-	  //console.log(gistArray);
-      //document.getElementById("searchResults").innerHTML = "";
 
-
-	  //document.getElementById("searchResults").innerHTML = '<a href="'+ gistArray[i].html_url + '">' + gistArray[i].description + '</a>';
 	  var list = document.getElementById('searchResults');
 	  var ul = document.createElement('ul');
 	  for ( var i = 0; i <= gistArray.length; i++ ) {
-		  //console.log(gistArray[i].description);
-	      //console.log(gistArray[i].html_url);
 
           var listItem = document.createElement('li');
 		  ul.appendChild(listItem);
@@ -52,11 +45,9 @@ var xmlHttp;
 			  gistArray[i].description = "No description provided";
 		  }
 	      listItem.innerHTML = '<a href="'+ gistArray[i].html_url + '">' + gistArray[i].description + '</a>&nbsp;';
-		  gistDescription = gistArray[i].description;
 		  gistId = gistArray[i].id;
-		  gistUrl = gistArray[i].html_url;
 		  
-		  //adds a favorites button 
+		  //adds a favorites button to each search result item
 		  var btnAddToFav = document.createElement("input");
 		  btnAddToFav.type = "button";
 		  listItem.appendChild(btnAddToFav);
@@ -67,34 +58,23 @@ var xmlHttp;
 			var gistId = this.getAttribute("gistId");
 			console.log("Gist id= " + gistId);
 			var toBeFavoredGist = findById(gistId);
-			console.log("to be favored Gist= " + toBeFavoredGist);
-			console.log("to be favored Gist description = " + toBeFavoredGist.description);
-			//localStorage.setItem('userList', JSON.stringify(this.parentNode.textContent));
-			//var itemToAdd = new Favorite(toBeFavoredGist.id, toBeFavoredGist.description, toBeFavoredGist.html_url);
-			//addFavorite(settings, itemToAdd);
-			//localStorage.setItem('userList', JSON.stringify(this.parentNode.textContent));
-			//localStorage.setItem('userList', toBeFavoredGist.description);
-			localStorage.setItem('userList', JSON.stringify({
-				lsId : toBeFavoredGist.id,
-				lsDesc : toBeFavoredGist.description,
-				lsUrl : toBeFavoredGist.html_url }))
-			//var name = localStorage.getItem('name');
-			//console.log(name);
+
+			
+			//adds favorited item to local storage 
+			var myFav = new Object ();
+			myFav.url = toBeFavoredGist.html_url;
+			myFav.desc = toBeFavoredGist.description;
+			myFav.id = toBeFavoredGist.id;
+			localStorage.setItem(myFav.id, JSON.stringify(myFav));
+
+			
 			//document.getElementById('showFavorites').appendChild(ul);
-	        //btnAddToFav.parentNode.style.display='none';
+			document.getElementById('showFavorites').innerHTML = "";
 	        showFavorites();
 		  };
 		  
-		  
 		  }
-
-		//}
-	  
-    //}  
 	}
-	//makeGistList(document.getElementById('searchResults'), description);
-	//makeGistList(gistArray);
-	//document.getElementById('searchResults').appendChild(makeGistList(gistArray[0]));
 	};
 
 	//for(i=1; i<=numResults; i++ )
@@ -125,6 +105,7 @@ function addFavorite(settings, favorite) {
 	return false;
 }
 
+//searches gistArray to find id's that match 
 function findById(gId) {
 	for(i = 0; i<gistArray.length; i++){
 		if(gistArray[i].id === gId)
@@ -132,43 +113,51 @@ function findById(gId) {
 	}
 }
 
+//calls showFavorites function upon page load to show saved favorites 
 window.onload = function(){
-	var savedList = localStorage.getItem('userList');
-	console.log("SavedList = " + savedList);
-	if(savedList ===null){
-		settings = {'gists':[]};
-		localStorage.setItem('userList', JSON.stringify(settings));
-	} else{
-		//settings = JSON.parse(localStorage.getItem('userList'));
-		settings = localStorage.getItem('userList');
-	}
+	//var myId = key;
+	//var myFav = JSON.parse(localStorage.getItem(myId));
+	//var savedList = localStorage.getItem('userList');
+	//console.log("SavedList = " + savedList);
+	//if(savedList ===null){
+	//	settings = {'gists':[]};
+	//	localStorage.setItem('userList', JSON.stringify(settings));
+	//} else{
+	//	//settings = JSON.parse(localStorage.getItem('userList'));
+	//	settings = localStorage.getItem('userList');
+	//}
 	showFavorites();
 }
 
+//displays favorites to the screen 
 function showFavorites() {
   var list = document.getElementById('showFavorites');
   var ul = document.createElement('ul');
   for ( var key in localStorage ) {
-	  //console.log("Saved List = " + savedList);
 
 		var favItem = document.createElement('li');
-		//listItem.innerHTML = '<a href="'+ gistArray[i].html_url + '">' + gistArray[i].description + '</a>&nbsp;';
-		var fav = JSON.parse(localStorage.getItem('userList'));
-		favItem.innerHTML = '<a href="'+ fav.lsUrl + '">' + fav.lsDesc + '</a>&nbsp;';
-	    //favItem.innerHTML = localStorage[key];
+		
+		//NEW CODE TO TRY
+		var myId = key;
+		var myFav = JSON.parse(localStorage.getItem(myId));
+		
+	    favItem.innerHTML = '<a href="'+ myFav.url + '">' + myFav.desc + '</a>&nbsp;';
+		gistDeleteId = myId;
+		
   console.log("localStorage[key] = " + localStorage[key]);
 	var deleteButton = document.createElement("input");
 	deleteButton.type = "button";
-	ul.appendChild(deleteButton);
+	favItem.appendChild(deleteButton);
 	document.getElementById('showFavorites').appendChild(ul);
 	deleteButton.value = "Remove";
+	deleteButton.setAttribute("gistDeleteId", gistDeleteId);
 	deleteButton.onclick = function () {
-		localStorage.removeItem(key);
-		//localStorage.clear();
+		var gistDeleteId = this.getAttribute("gistDeleteId");
+		localStorage.removeItem(gistDeleteId);
+		document.getElementById('showFavorites').innerHTML = "";
 		showFavorites();
 	}
 	
-	favItem.appendChild(deleteButton);
 	ul.appendChild(favItem);
 	list.appendChild(ul);
   }
@@ -180,15 +169,4 @@ function makeGistList(){
 	
 }
 
-
-//function makeGistList (array) {
-//	var gistList = document.getElementById('searchResults');
-//	var ul = document.createElement('ul');
-//	for(i = 0; i < array.length; i++) {
-//		var listItem = document.createElement("li");
-//		listItem.appendChild(document.createTextNode(array[i].description));
-//		ul.appendChild(listItem);
-//	}
-//	return ul;
-//}
 
