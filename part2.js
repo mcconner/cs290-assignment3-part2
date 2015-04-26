@@ -3,15 +3,18 @@
 
 var settings = null;
 var gistArray = [];
+var bGetAll = false;
 
 function searchGists() {
   var i, url, numResults, python, json, javascript, sql;
   document.getElementById("searchResults").innerHTML = "";
 
 var xmlHttp;
-  if(window.XMLHttpRequest) {
+  if(window.XMLHttpRequest) 
+  {
     xmlHttp = new XMLHttpRequest();
-  }else{
+  }else
+  {
     xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
   }
   
@@ -20,7 +23,7 @@ var xmlHttp;
 
   url = 'https://api.github.com/gists';
  
-  //NOTE: Language filtering and pagination do not work 
+  //NOTE: pagination do not work 
  
   //Set variable to number of pages to display
   numResults = document.getElementsByName('numResults')[0].value;
@@ -30,6 +33,12 @@ var xmlHttp;
   json = document.getElementsByName('language-json')[0].checked;
   javascript = document.getElementsByName('language-javascript')[0].checked;
   sql = document.getElementsByName('language-sql')[0].checked;
+  
+  //set boolean variable to true if none of the checkboxes are checked 
+  if(!python && !json && !javascript && !sql)
+  {
+	  bGetAll = true;
+  }
  
   xmlHttp.onreadystatechange = function () 
   {
@@ -42,57 +51,55 @@ var xmlHttp;
 	  
 	  for ( var i = 0; i < gistArray.length; i++ ) 
 	  {
-		if(localStorage.getItem(gistArray[i].id) === null)
+		var lang = Object.keys(gistArray[i].files);
+		var lang2 = gistArray[i].files[lang[0]].language;
+		
+		//filtering by language 
+		if ((python && lang2 == 'Python') || (javascript && lang2 == 'JavaScript') || 
+		(json && lang2 == 'JSON') || (sql && lang2 == 'SQL') || (bGetAll))
 		{
-		  var listItem = document.createElement('li');
-		  ul.appendChild(listItem);
-		  document.getElementById('searchResults').appendChild(ul);
-		  if(gistArray[i].description === "" || gistArray[i].description === null)
+		  //checks if item is stored in favorites 
+		  if(localStorage.getItem(gistArray[i].id) === null)
 		  {
-		    gistArray[i].description = "No description provided";
-		  }
-		  listItem.innerHTML = '<a href="'+ gistArray[i].html_url + '">' + gistArray[i].description + '</a>&nbsp;';
-		
-		
-	      //listItem.innerHTML = '<a href="'+ gistArray[i].html_url + '">' + gistArray[i].description + '</a>&nbsp;';
-		  gistId = gistArray[i].id;
+		    var listItem = document.createElement('li');
+		    ul.appendChild(listItem);
+		    document.getElementById('searchResults').appendChild(ul);
+		    if(gistArray[i].description === "" || gistArray[i].description === null)
+		    {
+		      gistArray[i].description = "No description provided";
+		    }
+		    listItem.innerHTML = '<a href="'+ gistArray[i].html_url + '">' + gistArray[i].description + '</a>&nbsp;(' + gistArray[i].files[lang[0]].language + ')&nbsp';
+
+		    gistId = gistArray[i].id;
 		  
-		  //adds a favorites button to each search result item
-		  var btnAddToFav = document.createElement("input");
-		  btnAddToFav.type = "button";
-		  listItem.appendChild(btnAddToFav);
-		  btnAddToFav.innerHTML = "+";
-		  btnAddToFav.value = "+";
-		  btnAddToFav.setAttribute("gistId", gistId);
-		  btnAddToFav.onclick = function () 
-		 {
-		  var gistId = this.getAttribute("gistId");
-		  console.log("Gist id= " + gistId);
-		  var toBeFavoredGist = findById(gistId);
-			
-		  //adds favorited item to local storage 
-		  var myFav = new Object ();
-		  myFav.url = toBeFavoredGist.html_url;
-		  myFav.desc = toBeFavoredGist.description;
-		  myFav.id = toBeFavoredGist.id;
-		  localStorage.setItem(myFav.id, JSON.stringify(myFav));
+		    //adds a favorites button to each search result item
+		    var btnAddToFav = document.createElement("input");
+		    btnAddToFav.type = "button";
+		    listItem.appendChild(btnAddToFav);
+		    btnAddToFav.innerHTML = "+";
+		    btnAddToFav.value = "+";
+		    btnAddToFav.setAttribute("gistId", gistId);
+		    btnAddToFav.onclick = function () 
+		    {
+		      var gistId = this.getAttribute("gistId");
+		      console.log("Gist id= " + gistId);
+		      var toBeFavoredGist = findById(gistId);
+			 
+		      //adds favorited item to local storage 
+		      var myFav = new Object ();
+		      myFav.url = toBeFavoredGist.html_url;
+		      myFav.desc = toBeFavoredGist.description;
+		      myFav.id = toBeFavoredGist.id;
+		      localStorage.setItem(myFav.id, JSON.stringify(myFav));
 
-		  document.getElementById('showFavorites').innerHTML = "";
-	      showFavorites();
-		};	
+		      document.getElementById('showFavorites').innerHTML = "";
+	          showFavorites();
+		    };	
+		  }
 		}
-
 	  }
 	}
   };
-
-	//for(i=1; i<=numResults; i++ )
-	//{
-	//	tempUrl = url + "?page=" + numResults;
-	//	console.log("TempUrl = " + tempUrl);
-	//	xmlHttp.open('GET', tempUrl);
-	//	xmlHttp.send();
-	//}
 
 	xmlHttp.open('GET', url);
 	xmlHttp.send();
@@ -142,7 +149,7 @@ function showFavorites()
 	var favItem = document.createElement('li');
 	var myId = key;
 	var myFav = JSON.parse(localStorage.getItem(myId));
-		
+	
 	favItem.innerHTML = '<a href="'+ myFav.url + '">' + myFav.desc + '</a>&nbsp;';
 	gistDeleteId = myId;
 		
