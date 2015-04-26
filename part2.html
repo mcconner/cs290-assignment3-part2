@@ -1,45 +1,34 @@
 <!DOCTYPE html>
+<!--Rachael McConnell
+    CS290 Spring 2015 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Assignment 3 Part 2</title>
 <script src='part2.js'></script>
 <link rel="stylesheet" href="style.css">
-</head>
+</head
+
 <body>
+  <form>
+    Select the number of results pages to display (30 per page):<br>
+    <input type='number' name='numResults' min='1' max='5'><br>
 
+    <br>Choose the languages to display:<br>
+    <input type='checkbox' id='python' name='language-python'>Python<br>
+    <input type='checkbox' id='json' name='language-json'>JSON<br>
+    <input type='checkbox' id='javascript' name='language-javascript'>JavaScript<br>
+    <input type='checkbox' id='sql' name='language-sql'>SQL<br>
+    <input type='button' name='search' value='Search' onclick='searchGists()'>
+  </form>
 
-<form>
+  <section>
+    <div id='searchResults'></div>
+  </section>
 
-Select the number of results pages to display (30 per page):
-</br>
-<input type='number' name='numResults' min='1' max='5'>
-<br>
-
-
-<br>
-Choose the languages to display:
-<br>
-<input type='checkbox' id='python' name='language-python'>Python
-<br>
-<input type='checkbox' id='json' name='language-json'>JSON
-<br>
-<input type='checkbox' id='javascript' name='language-javascript'>JavaScript
-<br>
-<input type='checkbox' id='sql' name='language-sql'>SQL
-<br>
-<input type='button' name='search' value='Search' onclick='searchGists()'>
-</form>
-
-<section>
-<div id='searchResults'></div>
-</section>
-
-<section>
-<h3>Favorites</h3>
-<div id='showFavorites'></div>
-</section>
-
-
+  <section>
+    <h3>Favorites</h3>
+    <div id='showFavorites'></div>
+  </section>
 </body>
 </html>
